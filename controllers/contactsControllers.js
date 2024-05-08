@@ -1,5 +1,3 @@
-// import contactsService from "../services/contactsServices.js";
-
 import {
   addContact,
   getContactById,
@@ -25,18 +23,11 @@ export const getOneContact = async (req, res, next) => {
     const {id} = req.params;
     const contactById = await getContactById(id);
     if (!contactById) {
-      // const err = new Error(`Contact with id=${id} not found`)
-      // err.status = 404;
-      // throw err;
       throw HttpError(404, `Contact with id ${id} not found`);
     }
     res.json(contactById);
   }
   catch (err) {
-    // const {status = 500, message = "Server err"} = err;
-    // res.status(status).json({
-    //   message,
-    // })
     next(err);
   }
 };
@@ -63,9 +54,7 @@ export const createContact = async (req, res, next) => {
       throw HttpError(400, error.message);
     }
 
-    // console.log(req.body)
     const result = await addContact(req.body);
-    // console.log(result)
     res.status(201).json(result);
   }
   catch (err) {
