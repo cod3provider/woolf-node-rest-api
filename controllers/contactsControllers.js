@@ -54,7 +54,7 @@ export const updateStatusContact = ctrlWrapper(async (req, res) => {
   const result = await updateContactStatusById(id, req.body);
 
   if (!result) {
-    throw HttpError(400, `Contact with id ${id} not found`);
+    throw HttpError(404, `Contact with id ${id} not found`);
   }
 
   res.json(result);
