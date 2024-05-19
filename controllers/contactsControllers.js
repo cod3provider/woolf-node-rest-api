@@ -41,6 +41,7 @@ export const createContact = ctrlWrapper(async (req, res) => {
 export const updateContact = ctrlWrapper(async (req, res) => {
   const {id} = req.params;
   const result = await updateContactById(id, req.body);
+
   if (!result) {
     throw HttpError(400, `Contact with id ${id} not found`);
   }
@@ -51,6 +52,7 @@ export const updateContact = ctrlWrapper(async (req, res) => {
 export const updateStatusContact = ctrlWrapper(async (req, res) => {
   const {id} = req.params;
   const result = await updateContactStatusById(id, req.body);
+
   if (!result) {
     throw HttpError(400, `Contact with id ${id} not found`);
   }
