@@ -58,15 +58,16 @@ import Contact from "../models/Contact.js";
 //   return contacts[idx];
 // }
 
-export async function listContacts() {
-  return Contact.find();
+export function listContacts() {
+  return Contact.find({}, "-createdAt -updatedAt");
 }
 
 export async function getContactById(contactId) {
-  return Contact.findById(contactId);
+  const result = await Contact.findById(contactId);
+  return result;
 }
 
-export async function removeContact(contactId) {
+export function removeContact(contactId) {
   return Contact.findByIdAndDelete(contactId);
 }
 
@@ -74,10 +75,10 @@ export async function addContact(body) {
   return Contact.create(body);
 }
 
-export async function updateContactById(contactId, data) {
-
+export function updateContactById(contactId, data) {
+  return Contact.findByIdAndUpdate(contactId, data);
 }
 
 export async function updateContactStatusById(contactId, data) {
-  return Contact.findOneAndUpdate(contactId, data);
+  return Contact.findByIdAndUpdate(contactId, data);
 }
