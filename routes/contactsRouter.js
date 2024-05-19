@@ -4,7 +4,7 @@ import {
   getOneContact,
   deleteContact,
   createContact,
-  updateContact,
+  updateContact, updateStatusContact,
 } from "../controllers/contactsControllers.js";
 import isEmptyBody from "../middlewares/isEmptyBody.js";
 import validateBody from "../helpers/validateBody.js";
@@ -21,5 +21,7 @@ contactsRouter.delete("/:id", deleteContact);
 contactsRouter.post("/", isEmptyBody, validateBody(createContactSchema), createContact);
 
 contactsRouter.put("/:id", isEmptyBody, validateBody(updateContactSchema), updateContact);
+
+contactsRouter.patch("/:id/favorite", updateStatusContact);
 
 export default contactsRouter;

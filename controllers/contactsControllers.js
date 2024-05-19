@@ -3,7 +3,8 @@ import {
   getContactById,
   listContacts,
   removeContact,
-  updateContactById
+  updateContactById,
+  updateContactStatusById
 } from "../services/contactsServices.js";
 import HttpError from "../helpers/HttpError.js";
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
@@ -46,3 +47,13 @@ export const updateContact = ctrlWrapper(async (req, res) => {
 
   res.json(result);
 });
+
+export const updateStatusContact = ctrlWrapper(async (req, res) => {
+  const {id} = req.params;
+  const result = await updateContactStatusById(id, req.body);
+  if (!result) {
+    throw HttpError(400, `Contact with id ${id} not found`);
+  }
+
+  res.json(result);
+})
