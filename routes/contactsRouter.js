@@ -23,6 +23,6 @@ contactsRouter.post("/", isEmptyBody, validateBody(createContactSchema), createC
 
 contactsRouter.put("/:id", isValidId, isEmptyBody, validateBody(updateContactSchema), updateContact);
 
-contactsRouter.patch("/:id/favorite", isValidId, updateStatusContact);
+contactsRouter.patch("/:id/favorite", isValidId, validateBody(updateContactSchema), updateStatusContact);
 
 export default contactsRouter;
