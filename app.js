@@ -8,8 +8,7 @@ import contactsRouter from "./routes/contactsRouter.js";
 
 dotenv.config();
 
-const {DB_USER, DB_PASSWORD, DB_HOST, DB_NAME, DB_PARAMS } = process.env;
-const DB_URL = `mongodb+srv://${DB_USER}:${encodeURIComponent(DB_PASSWORD)}@${DB_HOST}/${DB_NAME}?${DB_PARAMS}`;
+const {DB_URL} = process.env;
 
 const app = express();
 
