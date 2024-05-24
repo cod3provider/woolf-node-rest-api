@@ -1,7 +1,7 @@
 import Contact from "../models/Contact.js";
 
-export function listContacts(search= {}) {
-  const {filter = {}, fields = "", params = {}} = search;
+export function listContacts(search = {}) {
+  const { filter = {}, fields = "", params = {} } = search;
   return Contact.find(filter, fields, params);
 }
 
