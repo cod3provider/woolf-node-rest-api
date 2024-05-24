@@ -1,4 +1,10 @@
-export const handleMongooseErr = (error, data, next) => {
+export const handleSaveError = (error, data, next) => {
+  const {name, code} = error;
+
+  if (name === "MongoServerError" && code === 11000) {
+    error.status = 409;
+    next();
+  }
   error.status = 400;
   next();
 }
