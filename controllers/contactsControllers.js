@@ -1,60 +1,71 @@
 import {
   addContact,
-  getContactById,
+  getContact,
   listContacts,
   removeContact,
-  updateContactById,
-  updateContactStatusById
+  updateContact,
+  updateContactStatus
 } from "../services/contactsServices.js";
 import HttpError from "../helpers/HttpError.js";
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
 
 export const getAllContacts = ctrlWrapper(async (req, res) => {
-  const contacts = await listContacts();
+  const {_id: owner} = req.user;
+  const filter = {owner};
+  const fields = "-createdAt -updatedAt";
+  const {page = 1, limit = 10} = req.query;
+  const skip = (page - 1) * limit;
+  const params = {skip, limit};
+  const contacts = await listContacts({filter, fields, params});
   res.json(contacts);
 });
 
 export const getOneContact = ctrlWrapper(async (req, res) => {
-  const {id} = req.params;
-  const contactById = await getContactById(id);
-  if (!contactById) {
-    throw HttpError(404, `Contact with id ${id} not found`);
+  const {id: _id} = req.params;
+  const {_id: owner} = req.user;
+  const result = await getContact({_id, owner});
+  if (!result) {
+    throw HttpError(404, `Contact with id ${_id} not found`);
   }
-  res.json(contactById);
+  res.json(result);
 });
 
-export const deleteContact = ctrlWrapper(async (req, res) => {
-  const {id} = req.params;
-  const deletedContact = await removeContact(id);
+export const deleteContactById = ctrlWrapper(async (req, res) => {
+  const {id: _id} = req.params;
+  const {_id: owner} = req.user;
+  const deletedContact = await removeContact({_id, owner});
   if (!deletedContact) {
-    throw HttpError(400, `Contact with id ${id} not found`);
+    throw HttpError(400, `Contact with id ${_id} not found`);
   }
 
   res.json(deletedContact);
 });
 
 export const createContact = ctrlWrapper(async (req, res) => {
-  const result = await addContact(req.body);
+  const {_id: owner} = req.user;
+  const result = await addContact({...req.body, owner});
   res.status(201).json(result);
 });
 
-export const updateContact = ctrlWrapper(async (req, res) => {
-  const {id} = req.params;
-  const result = await updateContactById(id, req.body);
+export const updateContactById = ctrlWrapper(async (req, res) => {
+  const {id: _id} = req.params;
+  const {_id: owner} = req.user;
+  const result = await updateContact({_id, owner}, req.body);
 
   if (!result) {
-    throw HttpError(400, `Contact with id ${id} not found`);
+    throw HttpError(400, `Contact with id ${_id} not found`);
   }
 
   res.json(result);
 });
 
-export const updateStatusContact = ctrlWrapper(async (req, res) => {
-  const {id} = req.params;
-  const result = await updateContactStatusById(id, req.body);
+export const updateStatusContactById = ctrlWrapper(async (req, res) => {
+  const {id: _id} = req.params;
+  const {_id: owner} = req.user
+  const result = await updateContactStatus({_id, owner}, req.body);
 
   if (!result) {
-    throw HttpError(404, `Contact with id ${id} not found`);
+    throw HttpError(404, `Contact with id ${_id} not found`);
   }
 
   res.json(result);
