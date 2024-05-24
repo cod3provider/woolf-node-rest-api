@@ -4,7 +4,7 @@ import {handleSaveError, setSettingsUpdate} from "./hooks.js";
 const contactSchema = new Schema({
     name: {
       type: String,
-      required: [true, 'Set name for contact'],
+      required: [true, "Set name for contact"],
     },
     email: {
       type: String,
@@ -16,6 +16,11 @@ const contactSchema = new Schema({
       type: Boolean,
       default: false,
     },
+    owner: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: "user",
+    }
   }, {versionKey: false, timestamps: true}
 );
 
