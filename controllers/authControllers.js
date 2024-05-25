@@ -20,8 +20,10 @@ export const register = ctrlWrapper(async (req, res) => {
   const newUser = await createUser(req.body);
 
   res.status(201).json({
-    email: newUser.email,
-    subscription: newUser.subscription,
+    user: {
+      email: newUser.email,
+      subscription: newUser.subscription,
+    },
   });
 });
 
@@ -48,6 +50,10 @@ export const login = ctrlWrapper(async (req, res) => {
 
   res.json({
     token,
+    user: {
+      email,
+      password,
+    },
   });
 });
 
@@ -64,9 +70,7 @@ export const logout = ctrlWrapper(async (req, res) => {
   const { _id } = req.user;
   await updateUser({ _id }, { token: "" });
 
-  res.json({
-    message: "You logged out",
-  });
+  res.status(204).send();
 });
 
 export const changeSubscription = ctrlWrapper(async (req, res) => {

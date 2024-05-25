@@ -6,12 +6,12 @@ const authenticate = async (req, res, next) => {
   const { authorization } = req.headers;
 
   if (!authorization) {
-    throw next(HttpError(401, "Not authorized"));
+    return next(HttpError(401, "Not authorized"));
   }
 
   const [bearer, token] = authorization.split(" ");
   if (bearer !== "Bearer") {
-    return next(HttpError(410, "Bearer not found"));
+    return next(HttpError(401, "Bearer not found"));
   }
 
   try {
