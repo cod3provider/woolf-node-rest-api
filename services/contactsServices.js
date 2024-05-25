@@ -22,5 +22,5 @@ export function updateContact(filter, data) {
 }
 
 export function updateContactStatus(filter, data) {
-  return Contact.findByIdAndUpdate(filter, data);
+  return Contact.findOneAndUpdate(filter, data);
 }

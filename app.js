@@ -9,7 +9,7 @@ import authRouter from "./routes/authRouter.js";
 
 dotenv.config();
 
-const {DB_URL} = process.env;
+const { DB_URL } = process.env;
 
 const app = express();
 
@@ -18,7 +18,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/contacts", contactsRouter);
-app.use("/api/users", authRouter);
+app.use("/users", authRouter);
 
 app.use((_, res) => {
   res.status(404).json({ message: "Route not found" });
@@ -29,13 +29,16 @@ app.use((err, req, res, next) => {
   res.status(status).json({ message });
 });
 
-mongoose.connect(DB_URL)
-.then(() => {
-  app.listen(3000, () => {
-    console.log("Database connection successful. Server is running. Use our API on port: 3000");
+mongoose
+  .connect(DB_URL)
+  .then(() => {
+    app.listen(3000, () => {
+      console.log(
+        "Database connection successful. Server is running. Use our API on port: 3000",
+      );
+    });
+  })
+  .catch((err) => {
+    console.log(err.message);
+    process.exit(1);
   });
-})
-.catch(err => {
-  console.log(err.message)
-  process.exit(1);
-});
