@@ -1,3 +1,6 @@
+import path from "path";
+import fs from "fs/promises";
+
 import {
   createUser,
   findExistUser,
@@ -9,20 +12,29 @@ import HttpError from "../helpers/HttpError.js";
 import compareHash from "../helpers/compareHash.js";
 import { createToken } from "../helpers/jwt.js";
 
+const avatarPath = path.resolve("public", "avatars");
+
 export const register = ctrlWrapper(async (req, res) => {
   const { email } = req.body;
+  console.log(req.file);
+  const { path: oldPath, filename } = req.file;
   const existUser = await findExistUser({ email });
+  const newPath = path.join(avatarPath, filename);
+
+  await fs.rename(oldPath, newPath);
+  const avatarURL = path.join("avatars", filename);
 
   if (existUser) {
     throw HttpError(409, "User with this email already exist");
   }
 
-  const newUser = await createUser(req.body);
+  const newUser = await createUser(req.body, avatarURL);
 
   res.status(201).json({
     user: {
       email: newUser.email,
       subscription: newUser.subscription,
+      avatarURL,
     },
   });
 });

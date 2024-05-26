@@ -14,11 +14,13 @@ import {
   changeSubscription,
 } from "../controllers/authControllers.js";
 import authenticate from "../middlewares/authenticate.js";
+import upload from "../middlewares/upload.js";
 
 const authRouter = express.Router();
 
 authRouter.post(
   "/register",
+  upload.single("avatarURL"),
   isEmptyBody,
   validateBody(authRegisterSchema),
   register,
