@@ -41,6 +41,7 @@ export const register = ctrlWrapper(async (req, res) => {
 export const login = ctrlWrapper(async (req, res) => {
   const { email, password } = req.body;
   const existingUser = await findExistUser({ email });
+
   if (!existingUser) {
     throw HttpError(401, "Email or password is wrong");
   }
@@ -63,7 +64,7 @@ export const login = ctrlWrapper(async (req, res) => {
     token,
     user: {
       email,
-      password,
+      subscription: existingUser.subscription,
     },
   });
 });
