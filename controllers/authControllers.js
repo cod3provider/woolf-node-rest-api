@@ -1,3 +1,7 @@
+import path from "path";
+import fs from "fs/promises";
+import Jimp from "jimp";
+
 import {
   createUser,
   findExistUser,
@@ -8,10 +12,16 @@ import ctrlWrapper from "../decorators/ctrlWrapper.js";
 import HttpError from "../helpers/HttpError.js";
 import compareHash from "../helpers/compareHash.js";
 import { createToken } from "../helpers/jwt.js";
+import gravatar from "gravatar";
+import User from "../models/User.js";
+
+const avatarPath = path.resolve("public", "avatars");
 
 export const register = ctrlWrapper(async (req, res) => {
   const { email } = req.body;
+
   const existUser = await findExistUser({ email });
+  const avatarURL = gravatar.url(email, { s: "100", r: "x" }, false);
 
   if (existUser) {
     throw HttpError(409, "User with this email already exist");
@@ -23,6 +33,7 @@ export const register = ctrlWrapper(async (req, res) => {
     user: {
       email: newUser.email,
       subscription: newUser.subscription,
+      avatarURL,
     },
   });
 });
@@ -30,6 +41,7 @@ export const register = ctrlWrapper(async (req, res) => {
 export const login = ctrlWrapper(async (req, res) => {
   const { email, password } = req.body;
   const existingUser = await findExistUser({ email });
+
   if (!existingUser) {
     throw HttpError(401, "Email or password is wrong");
   }
@@ -52,7 +64,7 @@ export const login = ctrlWrapper(async (req, res) => {
     token,
     user: {
       email,
-      password,
+      subscription: existingUser.subscription,
     },
   });
 });
@@ -82,4 +94,26 @@ export const changeSubscription = ctrlWrapper(async (req, res) => {
     throw HttpError(404, "User with id ${_id} not found");
   }
   res.json(result);
+});
+
+export const updateAvatar = ctrlWrapper(async (req, res) => {
+  const { _id } = req.user;
+  const { path: oldPath, filename } = req.file;
+
+  const newPath = path.join(avatarPath, filename);
+  console.log(newPath);
+
+  try {
+    const avatarImg = await Jimp.read(oldPath);
+    await avatarImg.cover(250, 250).quality(60).writeAsync(newPath);
+  } catch (err) {
+    throw HttpError(500, "Failed to process the image");
+  }
+
+  await fs.rename(oldPath, newPath);
+
+  const avatarURL = path.join("avatars", filename);
+  await User.findByIdAndUpdate(_id, { avatarURL });
+
+  res.json({ avatarURL });
 });

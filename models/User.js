@@ -1,15 +1,16 @@
-import {model, Schema} from "mongoose";
-import {handleSaveError, setSettingsUpdate} from "./hooks.js";
-import {emailRegexp} from "../constants/constants.js";
+import { model, Schema } from "mongoose";
+import { handleSaveError, setSettingsUpdate } from "./hooks.js";
+import { emailRegexp } from "../constants/constants.js";
 
-const userSchema = new Schema({
+const userSchema = new Schema(
+  {
     password: {
       type: String,
-      required: [true, 'Password is required'],
+      required: [true, "Password is required"],
     },
     email: {
       type: String,
-      required: [true, 'Email is required'],
+      required: [true, "Email is required"],
       match: emailRegexp,
       unique: true,
     },
@@ -21,8 +22,12 @@ const userSchema = new Schema({
     token: {
       type: String,
       default: null,
-    }
-  }, {versionKey: false, timestamps: true}
+    },
+    avatarURL: {
+      type: String,
+    },
+  },
+  { versionKey: false, timestamps: true },
 );
 
 userSchema.post("save", handleSaveError);

@@ -1,7 +1,8 @@
-import {Schema, model} from 'mongoose';
-import {handleSaveError, setSettingsUpdate} from "./hooks.js";
+import { Schema, model } from "mongoose";
+import { handleSaveError, setSettingsUpdate } from "./hooks.js";
 
-const contactSchema = new Schema({
+const contactSchema = new Schema(
+  {
     name: {
       type: String,
       required: [true, "Set name for contact"],
@@ -20,8 +21,9 @@ const contactSchema = new Schema({
       type: Schema.Types.ObjectId,
       required: true,
       ref: "user",
-    }
-  }, {versionKey: false, timestamps: true}
+    },
+  },
+  { versionKey: false, timestamps: true },
 );
 
 contactSchema.post("save", handleSaveError);
