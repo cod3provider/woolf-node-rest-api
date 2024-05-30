@@ -98,7 +98,6 @@ export const changeSubscription = ctrlWrapper(async (req, res) => {
 
 export const updateAvatar = ctrlWrapper(async (req, res) => {
   const { _id } = req.user;
-  const { email, password } = req.body;
   const { path: oldPath, filename } = req.file;
 
   const newPath = path.join(avatarPath, filename);
