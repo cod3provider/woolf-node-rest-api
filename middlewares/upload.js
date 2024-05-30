@@ -17,18 +17,9 @@ const limits = {
   fileSize: 1024 * 1024 * 10,
 };
 
-// const fileFilter = (req, file, cb) => {
-//   const extension = file.originalname.split(".").pop();
-//   if (extension !== "jpeg" || extension !== "jpg" || extension !== "png") {
-//     return cb(new HttpError(400, "This file extension is not allowed"));
-//   }
-//   cb(null, true);
-// };
-
 const upload = multer({
   storage,
   limits,
-  // fileFilter,
 });
 
 export default upload;
