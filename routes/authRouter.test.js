@@ -43,8 +43,6 @@ describe("test /users/login", () => {
     const { statusCode, body } = await request(app)
       .post("/users/login")
       .send(userData);
-    console.log("body", body);
-    console.log("userData", userData);
 
     expect(statusCode).toBe(200);
     expect(body.user).toBeDefined();

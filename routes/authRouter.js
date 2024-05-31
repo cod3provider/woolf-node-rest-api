@@ -12,7 +12,7 @@ import {
   getCurrent,
   logout,
   changeSubscription,
-  updateAvatar,
+  changeAvatar,
 } from "../controllers/authControllers.js";
 import authenticate from "../middlewares/authenticate.js";
 import upload from "../middlewares/upload.js";
@@ -43,7 +43,7 @@ authRouter.patch(
   "/avatars",
   upload.single("avatarURL"),
   authenticate,
-  updateAvatar,
+  changeAvatar,
 );
 
 export default authRouter;
