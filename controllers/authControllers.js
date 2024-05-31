@@ -5,6 +5,7 @@ import Jimp from "jimp";
 import {
   createUser,
   findExistUser,
+  updateAvatar,
   updateSubscription,
   updateUser,
 } from "../services/authServices.js";
@@ -13,7 +14,6 @@ import HttpError from "../helpers/HttpError.js";
 import compareHash from "../helpers/compareHash.js";
 import { createToken } from "../helpers/jwt.js";
 import gravatar from "gravatar";
-import User from "../models/User.js";
 
 const avatarPath = path.resolve("public", "avatars");
 
@@ -27,7 +27,7 @@ export const register = ctrlWrapper(async (req, res) => {
     throw HttpError(409, "User with this email already exist");
   }
 
-  const newUser = await createUser(req.body);
+  const newUser = await createUser({ ...req.body, avatarURL });
 
   res.status(201).json({
     user: {
@@ -96,24 +96,24 @@ export const changeSubscription = ctrlWrapper(async (req, res) => {
   res.json(result);
 });
 
-export const updateAvatar = ctrlWrapper(async (req, res) => {
+export const changeAvatar = ctrlWrapper(async (req, res) => {
   const { _id } = req.user;
+
+  if (!req.file) {
+    throw HttpError(400, "Image file not found");
+  }
   const { path: oldPath, filename } = req.file;
+  console.log(oldPath);
 
   const newPath = path.join(avatarPath, filename);
-  console.log(newPath);
 
-  try {
-    const avatarImg = await Jimp.read(oldPath);
-    await avatarImg.cover(250, 250).quality(60).writeAsync(newPath);
-  } catch (err) {
-    throw HttpError(500, "Failed to process the image");
-  }
-
-  await fs.rename(oldPath, newPath);
+  const avatar = await Jimp.read(oldPath);
+  avatar.cover(250, 250).write(newPath);
+  fs.unlink(oldPath);
 
   const avatarURL = path.join("avatars", filename);
-  await User.findByIdAndUpdate(_id, { avatarURL });
+  const result = await updateAvatar(_id, { avatarURL });
+  console.log(result);
 
-  res.json({ avatarURL });
+  res.json({ avatarURL: result.avatarURL });
 });
