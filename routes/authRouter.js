@@ -1,6 +1,7 @@
 import express from "express";
 import validateBody from "../helpers/validateBody.js";
 import {
+  authEmailSchema,
   authLoginSchema,
   authRegisterSchema,
   subscriptionSchema,
@@ -13,6 +14,8 @@ import {
   logout,
   changeSubscription,
   changeAvatar,
+  verifyUser,
+  resendVerify,
 } from "../controllers/authControllers.js";
 import authenticate from "../middlewares/authenticate.js";
 import upload from "../middlewares/upload.js";
@@ -24,6 +27,15 @@ authRouter.post(
   isEmptyBody,
   validateBody(authRegisterSchema),
   register,
+);
+
+authRouter.get("/verify/:verificationToken", verifyUser, resendVerify);
+
+authRouter.post(
+  "/verify",
+  isEmptyBody,
+  validateBody(authEmailSchema),
+  resendVerify,
 );
 
 authRouter.post("/login", isEmptyBody, validateBody(authLoginSchema), login);
